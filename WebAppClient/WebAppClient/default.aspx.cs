@@ -13,12 +13,11 @@ namespace WebAppClient
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            BlockChain bc = new BlockChain("https://rpc.blockchain.info:443");
-            bc.Credentials = new NetworkCredential("mylogin", "mypass");
+            BlockChain bc = new BlockChain("http://rpc.blockchain.info:80");
+            bc.Credentials = new NetworkCredential("xx", "yy");
+           // var i = bc.GetInfo();
 
-            var i = bc.GetInfo();
-
-          //  var d = bc.GetDifficulty();
+           var d = bc.GetBlockByCount(7);
 
 
 
