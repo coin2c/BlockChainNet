@@ -76,12 +76,24 @@ namespace WebAppClient
         }
  */
 
+        static string CreateAuthorization(string realm, string userName, string password)
+        {
+            string auth = ((realm != null) && (realm.Length > 0) ?
+            realm + @"\" : "") + userName + ":" + password;
+            auth = Convert.ToBase64String(Encoding.Default.GetBytes(auth));
+            return auth;
+        }
+
+
         public JObject InvokeMethod(string a_sMethod, params object[] a_params)
         {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(BlockChainUri);
             webRequest.Credentials = Credentials;
 
-            webRequest.ContentType = "application/json-rpc";
+            string auth = CreateAuthorization("", "4bfb9301-090e-4f6f-9ba8-1edba1065cf5", "c2csecret!");
+            webRequest.Headers["Authorization"] = "Basic " + auth;
+
+            webRequest.ContentType = "application/json";
             webRequest.Method = "POST";
 
             JObject joe = new JObject();
@@ -157,17 +169,32 @@ namespace WebAppClient
 
         public JObject GetInfo()
         {
-            JToken j = InvokeMethod("getinfo")["result"];
-
-            return j as JObject;
-
+            return InvokeMethod("getinfo")["result"] as JObject;
         }
+
+        public bool WalletPassPhrase(string pass, int timeout)
+        {
+            return (bool)InvokeMethod("walletpassphrase", pass, timeout)["result"];
+        }
+
+        public string GetAccount(string sAddress)
+        {
+            return (string)InvokeMethod("getaccount", sAddress)["result"];
+        }
+
+        public JObject ListReceivedByAddress()
+        {
+            return InvokeMethod("listreceivedbyaddress")["result"] as JObject;
+        }
+
+
 
         public float GetDifficulty()
         {
             return (float)InvokeMethod("getdifficulty")["result"];
         }
 
+        // deprecated ?
         public string GetBlockByCount(int a_height)
         {
             return InvokeMethod("getblockbycount", a_height)["result"].ToString();
@@ -198,9 +225,9 @@ namespace WebAppClient
             return (float)InvokeMethod("gethashespersec")["result"];
         }
 
-        public string GetNewAddress(string a_account)
+        public string GetNewAddress()
         {
-            return InvokeMethod("getnewaddress", a_account)["result"].ToString();
+            return InvokeMethod("getnewaddress")["result"].ToString();
         }
 
         public float GetReceivedByAccount(string a_account, int a_minconf = 1)

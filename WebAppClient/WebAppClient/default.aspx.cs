@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,10 +15,24 @@ namespace WebAppClient
         {
 
             BlockChain bc = new BlockChain("http://rpc.blockchain.info:80");
-            bc.Credentials = new NetworkCredential("xx", "yy");
-           // var i = bc.GetInfo();
+            bc.Credentials = new NetworkCredential("4bfb9301-090e-4f6f-9ba8-1edba1065cf5", "c2csecret!");
+/*
+            JObject i = bc.GetInfo();
 
-           var d = bc.GetBlockByCount(7);
+            int s = (int)i["balance"];
+
+            float d = bc.GetDifficulty();
+
+           string c = bc.GetBlockByCount(7);
+*/
+            JObject rec = bc.ListReceivedByAddress();
+
+            if (bc.WalletPassPhrase("c22csecret!", 30))
+            {
+                //string n = bc.GetNewAddress();
+
+                string a = bc.GetAccount("1PAJ3JjFAEPGaAAYNirD7NxuUwRnjt6Aac");
+            }
 
 
 
